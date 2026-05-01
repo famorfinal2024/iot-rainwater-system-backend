@@ -1,4 +1,4 @@
-# views.py
+
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
@@ -31,6 +31,46 @@ def system_info_create(request):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['PUT'])
+def system_info_update(request, pk):
+    try:
+        info = SystemInfo.objects.get(pk=pk)
+    except SystemInfo.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    serializer = SystemInfoSerializer(info, data=request.data)
+
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data)
+
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['PATCH'])
+def system_info_partial_update(request, pk):
+    try:
+        info = SystemInfo.objects.get(pk=pk)
+    except SystemInfo.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    serializer = SystemInfoSerializer(info, data=request.data, partial=True)
+
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data)
+
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['DELETE'])
+def system_info_delete(request, pk):
+    try:
+        info = SystemInfo.objects.get(pk=pk)
+        info.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    except SystemInfo.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    
 
 
 @api_view(['GET'])
@@ -104,3 +144,10 @@ def protected_view(request):
         "message": "Authorized access",
         "user": request.user.username
     })
+
+
+
+      
+    
+
+    

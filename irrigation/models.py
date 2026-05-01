@@ -13,6 +13,7 @@ class Schedule(models.Model):
     date = models.DateField()
     irrigation_days = models.IntegerField()
     times_per_day = models.IntegerField()
+    
 
     def __str__(self):
         return f"{self.user.username} - {self.date}"
